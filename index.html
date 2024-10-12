@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Viewer App</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f4f4f4;
+        }
+        #pdf-viewer {
+            width: 80%;
+            height: 90%;
+            border: 2px solid #000;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="pdf-viewer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script>
+        const url = 'path-to-your-pdf-file.pdf'; // Replace this with your PDF file name
+
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+
+        const pdfViewerDiv = document.getElementById('pdf-viewer');
+
+        let loadingTask = pdfjsLib.getDocument(url);
+        loadingTask.promise.then(function(pdf) {
+            pdf.getPage(1).then(function(page) {
+                let scale = 1.5;
+                let viewport = page.getViewport({ scale: scale });
+
+                let canvas = document.createElement('canvas');
+                pdfViewerDiv.appendChild(canvas);
+                let context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                let renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                page.render(renderContext);
+            });
+        });
+    </script>
+
+</body>
+</html>
